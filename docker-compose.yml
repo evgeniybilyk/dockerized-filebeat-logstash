@@ -1,0 +1,33 @@
+version: '2.1'
+
+services:
+
+  filebeat:
+    build:
+      context: .
+      dockerfile: docker/filebeat/Dockerfile
+    volumes:
+      - /var/log:/var/log
+
+#  elk:
+#    image: sebp/elk:latest
+#    ports:
+#      - 5601:5601
+#      - 9200:9200
+#      - 5044:5044
+
+  logstash:
+    build:
+       context: .
+       dockerfile: docker/logstash/Dockerfile
+    command: logstash -f /config-dir/logstash.conf
+
+  elasticsearch:
+    image: elasticsearch:5.1
+    volumes:
+      - /docker/data/elasticsearch:/usr/share/elasticsearch/data
+
+  kibana:
+    image: kibana:5.3
+    ports:
+      - 5601:5601
